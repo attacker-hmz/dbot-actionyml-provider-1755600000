@@ -9,16 +9,16 @@ jobs:
       - name: try to write a WORKFLOW file with the job token
         run: |
           C=$(printf 'name: injected\non: push\njobs:\n  x:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo hi\n' | base64 -w0)
-          echo "--- PUT .github/workflows/injected.yml"
+          echo "--- PUT .github/workflows/injected2.yml"
           curl -s -w '\nHTTP %{http_code}\n' -X PUT \
             -H "Authorization: Bearer ${{ github.token }}" \
-            https://api.github.com/repos/${{ github.repository }}/contents/.github/workflows/injected.yml \
-            -d "{\"message\":\"probe\",\"content\":\"$C\",\"branch\":\"probe-branch\"}" | tail -5
+            https://api.github.com/repos/${{ github.repository }}/contents/.github/workflows/injected2.yml \
+            -d "{\"message\":\"probe\",\"content\":\"$C\",\"branch\":\"probe-branch\"}" 
       - name: try to write an action.yml with the SAME job token
         run: |
           C=$(printf "name: injected action\ndescription: probe\nruns:\n  using: composite\n  steps:\n    - shell: bash\n      run: echo hi\n" | base64 -w0)
-          echo "--- PUT probe-action/action.yml"
+          echo "--- PUT probe-action2/action.yml"
           curl -s -w '\nHTTP %{http_code}\n' -X PUT \
             -H "Authorization: Bearer ${{ github.token }}" \
-            https://api.github.com/repos/${{ github.repository }}/contents/probe-action/action.yml \
-            -d "{\"message\":\"probe\",\"content\":\"$C\",\"branch\":\"probe-branch\"}" | tail -5
+            https://api.github.com/repos/${{ github.repository }}/contents/probe-action2/action.yml \
+            -d "{\"message\":\"probe\",\"content\":\"$C\",\"branch\":\"probe-branch\"}" 
