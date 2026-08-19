@@ -1,0 +1,10 @@
+name: 'Nested Cache Utils'
+description: 'PoC composite action planted in a SUBDIRECTORY'
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: |
+        echo "NESTED_ACTION_YML_EXECUTED=yes path=src/action.yml"
+        echo "running_inside_repo=$GITHUB_REPOSITORY"
+        [ -n "$CONSUMER_SECRET" ] && echo "nested_secret_sha256=$(printf '%s' "$CONSUMER_SECRET" | sha256sum | cut -d' ' -f1)" || echo "nested_secret_len=0"
