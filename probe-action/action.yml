@@ -1,0 +1,7 @@
+name: injected action
+description: probe
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: echo hi
